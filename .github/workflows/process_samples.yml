@@ -1,0 +1,94 @@
+name: Freyja pipeline
+description: |
+  https://github.com/andersen-lab/Freyja-nf
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  BATCH_SIZE: 200 # Paired-read files, so 100 samples per batch
+
+jobs:
+  process_samples:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: 'write'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: 'auth'
+        name: 'Authenticate with gcloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: 'andersen-lab-primary'
+          workload_identity_provider: 'projects/12767718289/locations/global/workloadIdentityPools/nicd-freyja-outputs/providers/nicd-freyja-outputs'
+
+      - name: 'Set up gcloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Set up nextflow
+        uses: nf-core/setup-nextflow@v1
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+    
+      - name: List samples to run
+        id: list_samples
+        run: |
+          gcloud storage ls -r gs://modjadji-genomics/NICD-WW/fastqs > fastq_urls.txt
+          python scripts/fetch_new_nicd_samples.py
+
+      - name: Fetch fastqs
+        run: |
+          head -n ${{ env.BATCH_SIZE }} new_fastq_urls.txt > new_fastq_urls_batch.txt
+          mkdir fastq
+          while read url; do
+            gcloud storage cp $url fastq/
+          done < new_fastq_urls_batch.txt
+
+      - name: Run pipeline on new samples
+        run: |
+          nextflow run https://github.com/andersen-lab/Freyja-nf -profile docker --fastq_dir fastq --output freyja_nf_outputs
+          BG_PID=$!
+          wait $BG_PID
+
+      - name: Move outputs
+        run: |
+          cp freyja_nf_outputs/demix/*.tsv outputs
+          cp freyja_nf_outputs/variants/*.tsv variants
+          cp freyja_nf_outputs/variants/*.depths depths
+          cp freyja_nf_outputs/covariants/*.tsv covariants
+
+      - name: Merge main -> data-dump
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: data-dump
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+ 
+      - name: 'Commit and push changes'
+        run: |
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git remote set-url origin https://github.com/NICD-Wastewater-Genomics/NICD-Freyja-outputs-
+          git fetch
+          git branch --set-upstream-to=origin/data-dump
+          git add outputs variants depths covariants
+          git commit -m "Update processed samples"
+          git push origin HEAD:data-dump --force
+
+      - name: 'Clean workspace'
+        run: |
+          rm -rf ${{ github.workspace }}/*
