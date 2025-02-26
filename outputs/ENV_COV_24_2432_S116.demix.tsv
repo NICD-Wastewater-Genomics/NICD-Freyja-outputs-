@@ -1,6 +1,6 @@
 	../variants/ENV_COV_24_2432_S116.tsv
-summarized	[('LB.1* (LB.1.X)', 1.0000000001068439)]
-lineages	LB.1.3.4 LB.1.4.1
-abundances	0.99978882 0.00021118
-resid	3.529063187799588
+summarized	[('LB.1* (LB.1.X)', 0.9999314645321131), ('BA.2.86* (BA.2.86.X)', 6.853539645557908e-05)]
+lineages	LB.1 LA.1
+abundances	0.99993146 0.00006854
+resid	4.6120106560041965
 coverage	61.57910577534027
