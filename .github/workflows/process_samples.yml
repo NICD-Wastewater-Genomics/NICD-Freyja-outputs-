@@ -5,9 +5,10 @@ description: |
 on:
   schedule:
     - cron: '0 0 * * *'
-
+  workflow_dispatch:
+    
 env:
-  BATCH_SIZE: 200 # Paired-read files, so 100 samples per batch
+  BATCH_SIZE: 100 # Paired-read files, so 50 samples per batch
 
 jobs:
   process_samples:
@@ -18,17 +19,30 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: Checkout main
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          
+          android: true
+          dotnet: false
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: false
+
+      - name: Checkout origin/data-dump
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: data-dump
 
       - id: 'auth'
         name: 'Authenticate with gcloud'
         uses: 'google-github-actions/auth@v2'
         with:
           project_id: 'andersen-lab-primary'
-          workload_identity_provider: 'projects/12767718289/locations/global/workloadIdentityPools/github/providers/nicd-freyja-outputs'
+          workload_identity_provider: 'projects/12767718289/locations/global/workloadIdentityPools/nicd-freyja-outputs/providers/nicd-freyja-outputs'
 
       - name: 'Set up gcloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
@@ -87,7 +101,7 @@ jobs:
           git branch --set-upstream-to=origin/data-dump
           git add outputs variants depths covariants
           git commit -m "Update processed samples"
-          git push origin HEAD:data-dump --force
+          git push origin data-dump
 
       - name: 'Clean workspace'
         run: |
