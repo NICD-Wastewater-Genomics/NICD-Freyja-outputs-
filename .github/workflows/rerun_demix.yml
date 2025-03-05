@@ -33,7 +33,6 @@ jobs:
           conda config --add channels conda-forge  
           conda install --yes freyja pytest pyyaml pyarrow=17.0.0
   
-          
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
