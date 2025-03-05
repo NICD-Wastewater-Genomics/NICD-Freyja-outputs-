@@ -46,6 +46,7 @@ jobs:
         id: list_samples
         run: |
           gcloud storage ls -r gs://modjadji-genomics/NICD-WW/fastqs > fastq_urls.txt
+          cat fastq_urls.txt
           python scripts/fetch_new_nicd_samples.py
           if [ $(wc -l < new_fastq_urls.txt) -eq 0 ]; then
             exit 1
