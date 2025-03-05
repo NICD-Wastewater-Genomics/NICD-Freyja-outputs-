@@ -5,7 +5,7 @@ import os
 with open('fastq_urls.txt', 'r') as f:
     fastq_urls = f.read().splitlines()
 
-fastq_urls = [url for url in fastq_urls if '.fastq' in url and 'TB' not in url and 'MEV' not in url]
+fastq_urls = [url for url in fastq_urls if '.fastq' in url]
 
 sample_ids = list(set([url.split('/')[-1].split('_R')[0] for url in fastq_urls]))
 print(f'Found {len(sample_ids)} samples in gcloud bucket')
