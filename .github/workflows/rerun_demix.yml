@@ -1,6 +1,4 @@
 name: Rerun demix
-description: |
-  https://github.com/andersen-lab/Freyja-nf
 
 on:
   # schedule:
@@ -46,6 +44,7 @@ jobs:
 
       - name: Re-run demix
         run: |
+          conda activate test
           cd scripts/
           bash demix_parallel.sh
 
@@ -57,6 +56,6 @@ jobs:
       #     git fetch
       #     git branch --set-upstream-to=origin/data-dump
       #     git add outputs figures scripts agg_demixed.tsv
-      #     git commit -m "Re-run demix, update freyja metadata"
+      #     git commit -m "Re-run demix + update freyja metadata"
       #     git push origin data-dump
             
