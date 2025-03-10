@@ -43,8 +43,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Re-run demix
+        shell: bash -l {0}
         run: |
-          conda activate test
           cd scripts/
           bash demix_parallel.sh
 
