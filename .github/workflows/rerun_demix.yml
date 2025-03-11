@@ -32,7 +32,7 @@ jobs:
           conda config --set solver libmamba
           conda config --add channels bioconda
           conda config --add channels conda-forge  
-          conda install --yes freyja pytest pyyaml
+          conda install --yes freyja pytest pyyaml pyarrow=17.0.0
   
           
       - name: Install pip dependencies
