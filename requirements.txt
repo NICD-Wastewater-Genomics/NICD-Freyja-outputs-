@@ -2,4 +2,4 @@ pandas
 matplotlib
 pyyaml
 epiweeks
-pyarrow==10.0.1
+pyarrow==17.0.0
