@@ -22,7 +22,6 @@ jobs:
           auto-update-conda: true
           channels: bioconda,conda-forge
           channel-priority: true
-          python-version: '3.13'
           activate-environment: test
       
       - name: Install
