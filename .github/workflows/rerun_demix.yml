@@ -42,14 +42,14 @@ jobs:
           cd scripts/
           bash demix_parallel.sh
 
-      # - name: 'Commit and push changes'
-      #   run: |
-      #     git config --local user.name "$GITHUB_ACTOR"
-      #     git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      #     git remote set-url origin https://github.com/NICD-Wastewater-Genomics/NICD-Freyja-outputs-
-      #     git fetch
-      #     git branch --set-upstream-to=origin/data-dump
-      #     git add outputs figures scripts agg_demixed.tsv
-      #     git commit -m "Re-run demix + update freyja metadata"
-      #     git push origin data-dump
+      - name: 'Commit and push changes'
+        run: |
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git remote set-url origin https://github.com/NICD-Wastewater-Genomics/NICD-Freyja-outputs-
+          git fetch
+          git branch --set-upstream-to=origin/data-dump
+          git add outputs figures scripts agg_demixed.tsv
+          git commit -m "Re-run demix + update freyja metadata"
+          git push origin data-dump
             
