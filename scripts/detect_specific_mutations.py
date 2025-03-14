@@ -123,32 +123,60 @@ AA_muts_r = {v:k for k,v in zip(AA_muts.keys(),AA_muts.values())}
 
 
 # check for mutations of interest.
-tMuts = ['S:T95I','S:I101T','S:N164K','S:S172F','T21967-TGTAATGATCCATTTTTGGGTGTTTATTACCACAAA(S:DEL136/147)']
+tMuts = ['S:P26L','S:N164K','S:S172F','T21967-TGTAATGATCCATTTTTGGGTGTTTATTACCACAAA(S:DEL136/147)','S:I326V','S:K795T','S:D1184E']
 
 tMutsNUC = [AA_muts_r[t] for t in tMuts]
-#require 60% of mutations to be present. 
-df_target = df[(df[tMutsNUC]>0.001).mean(axis=1)>=0.60]#df[(df[tMutsNUC]>0.001).all(axis=1)]
+#require 30% of mutations to be present. 
+df_target = df[(df[tMutsNUC]>0.001).mean(axis=1)>=0.3]#df[(df[tMutsNUC]>0.001).all(axis=1)]
 
 df_target = df_target[df_target.columns[df_target.sum(axis=0)>0]]
 df_target = df_target[df_target.columns[df_target.mean(axis=0)<0.95]]
 
-df_target.index = [dfi+'/'+times_df.loc[dfi,'SiteProvince']+'/'+times_df.loc[dfi,'DistrictName'] for dfi in df_target.index]
+df_target2 = df_target.copy()
+df_target2.index = [dfi+'/'+times_df.loc[dfi,'SiteProvince']+'/'+times_df.loc[dfi,'DistrictName'] for dfi in df_target.index]
 df_target_sub = df_target[tMutsNUC]
-df_target.columns = [AA_muts[t] for t in df_target.columns]
-df_target_sub.columns = [AA_muts[t] for t in df_target_sub.columns]
+df_target.columns = [AA_muts[t].split('(')[1] if '(' in AA_muts[t] else AA_muts[t]  for t in df_target.columns]
+df_target_sub.columns = [AA_muts[t].split('(')[1] if '(' in AA_muts[t] else AA_muts[t] for t in df_target_sub.columns]
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import matplotlib
+
+for metro in ['Ekurhuleni MM','Tshwane MM']:
+    mut_freqs = {}
+    for dfi in df_target.index:
+        if metro == times_df.loc[dfi,'DistrictName']:
+            if ('Hospital' in times_df.loc[dfi,'SiteName']) or ('Other' in times_df.loc[dfi,'SiteName']):
+                continue
+            mut_freqs[times_df.loc[dfi,'SampleCollectionDate']] = df_target_sub.loc[dfi].to_dict()
+            print(dfi,times_df.loc[dfi,'SampleCollectionDate'],times_df.loc[dfi,'DistrictName'],times_df.loc[dfi,'SiteName'])
+    df_freq = pd.DataFrame(mut_freqs).T
+    df_freq = df_freq.sort_index()
+    fig, ax = plt.subplots()
+    for c in df_freq.columns:
+        ax.plot(df_freq.index,df_freq[c],'-o',label=c)
+    mean = df_freq.mean(axis=1)
+    ax.plot(df_freq.index,mean,'--',color='black')
+    ax.set_ylabel('SNV frequency')
+    locator = mdates.MonthLocator(bymonthday=1)
+    ax.xaxis.set_major_locator(locator)
+    ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+    ax.legend(bbox_to_anchor=(0.5, 1.16), loc='upper center',ncols=4)
+    fig.savefig(f'mut_trajectories_{metro}.png')
+    plt.close()
 df_target.to_csv('ba3_new_muts.csv')
+df_target_sub.index = [dfi+'/'+times_df.loc[dfi,'SiteProvince']+'/'+times_df.loc[dfi,'DistrictName']  for dfi in df_target_sub.index]
 df_target_sub.to_csv('ba3_new_muts_subset.csv')
 
-tMuts = ['S:T76P','S:R78M','S:M153T','S:A163V']
-tMutsNUC = [AA_muts_r[t] for t in tMuts]
-df_target = df[(df[tMutsNUC]>0.001).mean(axis=1)>=0.60]
+# tMuts = ['S:T76P','S:R78M','S:M153T','S:A163V']
+# tMutsNUC = [AA_muts_r[t] for t in tMuts]
+# df_target = df[(df[tMutsNUC]>0.001).mean(axis=1)>=0.60]
 
-df_target = df_target[df_target.columns[df_target.sum(axis=0)>0]]
-df_target = df_target[df_target.columns[df_target.mean(axis=0)<0.95]]
+# df_target = df_target[df_target.columns[df_target.sum(axis=0)>0]]
+# df_target = df_target[df_target.columns[df_target.mean(axis=0)<0.95]]
 
-df_target.index = [dfi+'/'+times_df.loc[dfi,'SiteProvince']+'/'+times_df.loc[dfi,'DistrictName']  for dfi in df_target.index]
-df_target_sub = df_target[tMutsNUC]
-df_target.columns = [AA_muts[t] for t in df_target.columns]
-df_target_sub.columns = [AA_muts[t] for t in df_target_sub.columns]
-df_target.to_csv('ba215_new_muts.csv')
-df_target_sub.to_csv('ba215_new_muts_subset.csv')
+# df_target.index = [dfi+'/'+times_df.loc[dfi,'SiteProvince']+'/'+times_df.loc[dfi,'DistrictName']  for dfi in df_target.index]
+# df_target_sub = df_target[tMutsNUC]
+# df_target.columns = [AA_muts[t] for t in df_target.columns]
+# df_target_sub.columns = [AA_muts[t] for t in df_target_sub.columns]
+# df_target.to_csv('ba215_new_muts.csv')
+# df_target_sub.to_csv('ba215_new_muts_subset.csv')
