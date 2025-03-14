@@ -1,6 +1,6 @@
 	../variants/ENV_COV_24_2680_S88.tsv
-summarized	[('LB.1* (LB.1.X)', 0.999999998862979)]
+summarized	[('LB.1* (LB.1.X)', 0.9999999970168569)]
 lineages	NZ.1 LB.1.3.4
 abundances	0.50000000 0.50000000
-resid	6.077039381582194
+resid	6.077039237184469
 coverage	50.021736949469954
