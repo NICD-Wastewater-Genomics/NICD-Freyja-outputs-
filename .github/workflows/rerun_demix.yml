@@ -44,7 +44,7 @@ jobs:
         shell: bash -l {0}
         run: |
           cd scripts/
-          bash demix_parallel.sh
+          bash demix_parallel_gh_action.sh
 
       - name: 'Commit and push changes'
         run: |
