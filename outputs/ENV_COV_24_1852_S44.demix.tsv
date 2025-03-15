@@ -1,6 +1,6 @@
 	../variants/ENV_COV_24_1852_S44.tsv
-summarized	[('BA.2.86* (BA.2.86.X)', 0.9999999997566059)]
+summarized	[('BA.2.86* (BA.2.86.X)', 0.9999999997315564)]
 lineages	JN.1.48.3
 abundances	1.00000000
-resid	7.953678114977402
+resid	7.95367811416158
 coverage	91.23499314450055
