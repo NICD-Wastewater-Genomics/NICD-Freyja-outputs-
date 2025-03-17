@@ -1,6 +1,6 @@
-	../variants/ENV_COV_24_2568_S31.tsv
-summarized	[('KP.3.1.1* (KP.3.1.1.X)', 0.9999999995018076)]
+	ENV_COV_24_2568_S31.tsv
+summarized	[('Other', 0.9999999994864099)]
 lineages	MC.19.1
 abundances	1.00000000
-resid	5.140035785239964
-coverage	54.563087315653945
+resid	4.850977878538093
+coverage	52.98130622345584
