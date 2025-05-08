@@ -1,6 +1,6 @@
-	ENV_COV_24_2647_S76.tsv
-summarized	[('Other', 0.9999999988253345)]
+	../variants/ENV_COV_24_2647_S76.tsv
+summarized	[('BA.2.86* (BA.2.86.X)', 0.9999999992573052)]
 lineages	NF.1.5 NF.1
 abundances	0.61884600 0.38115400
-resid	5.22669145495848
+resid	5.2300520514401425
 coverage	68.88606494331673

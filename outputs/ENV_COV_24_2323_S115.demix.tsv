@@ -1,6 +1,6 @@
-	ENV_COV_24_2323_S115.tsv
-summarized	[('Other', 0.9999999849904755)]
+	../variants/ENV_COV_24_2323_S115.tsv
+summarized	[('LB.1* (LB.1.X)', 0.9999999959622745)]
 lineages	NZ.1
-abundances	0.99999998
-resid	7.056228437516379
+abundances	1.00000000
+resid	7.057591214383105
 coverage	70.03979533826038
